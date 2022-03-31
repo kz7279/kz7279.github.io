@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kz7279.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能WEB服务器，经过webbenchh压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装cha">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++ Webserver">
+<meta property="og:url" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/index.html">
+<meta property="og:site_name" content="Wizzr&#39;s Blog">
+<meta property="og:description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能WEB服务器，经过webbenchh压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装cha">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/1.png">
+<meta property="og:image" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/2.png">
+<meta property="article:published_time" content="2022-03-31T12:17:17.000Z">
+<meta property="article:modified_time" content="2022-03-31T12:21:21.423Z">
+<meta property="article:author" content="Wizzr">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/1.png">
+
+<link rel="canonical" href="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>C++ Webserver | Wizzr's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wizzr's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/image1.jpg">
+      <meta itemprop="name" content="Wizzr">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wizzr's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++ Webserver
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-03-31 20:17:17 / Modified: 20:21:21" itemprop="dateCreated datePublished" datetime="2022-03-31T20:17:17+08:00">2022-03-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" itemprop="url" rel="index"><span itemprop="name">开源项目</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>github地址：<a target="_blank" rel="noopener" href="https://github.com/Aged-cat/WebServer">Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com)</a></p>
+<p>用C++实现的高性能WEB服务器，经过webbenchh压力测试可以实现上万的QPS</p>
+<p>技术点：</p>
+<ul>
+<li>利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型</li>
+<li>利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求</li>
+<li>利用标准库容器封装char，实现自动增长的缓冲区</li>
+<li>基于堆结构实现的定时器，关闭超时的非活动连接</li>
+<li>利用C++11多线程机制，实现了高效的线程池</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><h3 id="Buffer"><a href="#Buffer" class="headerlink" title="Buffer"></a>Buffer</h3><p>buffer即缓冲区，主要用于HTTP连接处理过程中暂存从fd中读取的数据，以及即将输出到fd中的数据，针对HTTP请求和响应的处理，又分为读缓冲区和写缓冲区</p>
+<p>我们使用vector&lt;char&gt;来实现缓冲区，使用std::atomic&lt;std::size_t&gt;类型的两个指针——读写指针，对每个缓冲区的情况进行记录</p>
+<p>这里涉及到了atomic关键字，atomic变量类似volatile变量，都是用来防止资源竞争的。它采用CAS（乐观锁）算法，对数据结构实现原子性封装</p>
+<p>size_t其实就是一个32位无符号整数，之所以不用unsigned int，是为了提高程序的可移植性</p>
+<p>首先介绍append(const char* str,size_t len)函数，它内部使用std::copy(str, str+len, curWritePtr())函数，将str的内容复制到当前写指针后的位置，之后更新写指针</p>
+<p>读写指针都是由我们定义的函数去更新的，在每次读写操作之后需要调用它们</p>
+<p>而所谓“自动增长”的特性，我认为来自每次调用std::copy之前先检查缓冲区大小是否足够，若不够，有两种情况</p>
+<ul>
+<li>若把缓冲区视为循环队列，空间足够。这种情况我们把读指针和写指针之间的数据移动到缓冲区头部，之后继续写</li>
+<li>空间不够。这种情况直接使用resize函数，为缓冲区分配空间</li>
+</ul>
+<p>之后就是buffer对外的接口，readFd(int fd, int* Errno)和writeFd(int fd,int* Errno)，这也是上层真正使用缓冲区的场景，作用分别是：把数据从fd读到读缓冲区中；把数据从写缓冲区写入fd中</p>
+<p>在readFd(int fd, int* Errno)中，我们使用readv(fd, iov, iovcnt)进行分散读，目的是防止缓冲区大小不足，把超出容量的部分暂存到一个长度为65535的char数组中。若发现容量不够，调用append把剩余部分写入缓冲区（此时append会自动分配空间）</p>
+<p>在writeFd(int fd,int* Errno)中，我们使用write(fd, curReadPtr(), readSize)向fd中写入数据。读写之后都要更新指针，除此之外，若发生错误，还要将errno返回到上层</p>
+<h3 id="Epoller"><a href="#Epoller" class="headerlink" title="Epoller"></a>Epoller</h3><p>epoller是对epoll的一个封装，以实现Reactor模型中的一个重要特性：由事件驱动，同时监听多个socket</p>
+<p>在构造函数中调用epoll_create(512)，创建一个epoll，最多可以监听512个socket。初始化一个std::vector<struct epoll_event> events_对象以保存epoll返回的事件</struct></p>
+<p>函数主要包括：addFd(int fd, uint32_t events)，modFd(int fd, uint32_t events)，delFd(int fd)，功能是通过epoll_ctl来增加&#x2F;修改&#x2F;删除监听的fd</p>
+<p>在前两个函数中传入events函数，从而可以在上层控制监听的模式</p>
+<p>调用wait(int timewait &#x3D; -1)，可以返回当前监听的结果，并存入events_中；getEventFd(size_t i)和getEvents(size_t i)可以向上层提供访问events_中第i个事件信息的接口</p>
+<h3 id="Timer"><a href="#Timer" class="headerlink" title="Timer"></a>Timer</h3><p>TimerNode是一个定时器节点，成员有id，过期时间expire，过期时调用的回调函数cb。它重载了＜运算符（expire &lt; t.expire）</p>
+<p>TimerManager存储std::vector&lt;TimerNode&gt; heap_，并用这个vector结构实现堆</p>
+<p>在TimerManager的构造函数中，调用heap_.reserve(64)来初始化</p>
+<p>通过std::unordered_map&lt;int,size_t&gt; ref_，可以通过id快速找到对应的TimerNode</p>
+<p>在添加一个新的id为k的计时器节点时，若该id未出现过，就将它放到队尾，然后向上调整；否则通过ref_找到它在堆中的位置，修改过期时间后，先试图向下调整，若失败，再向上调整</p>
+<p>删除TimeNode时，先调用其回调函数，然后将要删除的节点放到队尾，将该元素从heap_和ref_删除之后，调整堆</p>
+<p>int TimerManager::getNextHandle()函数会返回当前堆顶元素还有多久过期，即下一次清理还需要多久</p>
+<p>handle_expired_event()清理所有已过期的TimeNode，并调用它们的回调函数（从而关闭对应的HTTP连接）</p>
+<h3 id="threadpool"><a href="#threadpool" class="headerlink" title="threadpool"></a>threadpool</h3><p>threadpool是用到C++11机制最多的部分，实现比较复杂</p>
+<p>我们通过std::vector&lt;std::thread&gt; m_thread来存储线程，通过std::queue&lt;std::function&lt;void()&gt;&gt; tasks来存储任务，m_stop表示线程池是否关闭</p>
+<p>通过互斥锁std::mutex m_mutex和条件变量std::condition_variable m_cv来进行线程同步</p>
+<p>在threadpool的构造函数中，传入一个参数threadNumber，表示需要初始化的线程数量</p>
+<p>我们通过emplace_back来传递一个lambda表达式，来直接对vector内的线程进行初始化（注意，线程没有复制构造函数）</p>
+<p>这个lambda表达式是一个无限循环，直到m_stop为true，并且任务队列已空时才return</p>
+<p>在循环体中，每个线程首先通过std::unique_lock&lt;std::mutex&gt; lk(m_mutex)来获取m_mutex，然后调用m_cv.wait(lk, [this](){ return m_stop||!tasks.empty();})，释放锁并阻塞；可以看出，仅当m_stop为true，或者任务队列非空时线程才会被唤醒，这是为了避免“虚假唤醒”</p>
+<p>当某个线程被唤醒时（此时自动获取m_mutex，防止多个线程拿到同一个任务），它会调用std::move来取出队首任务并转换为右值，通过右值引用拿到任务并执行</p>
+<p>我们显式地删除threadpool的复制&#x2F;移动构造函数，以及赋值运算符</p>
+<p>在threadpool的析构函数中，我们首先通过std::unique_lock&lt;std::mutex&gt; lk(m_mutex)获取锁，然后将m_stop设置为true（获取锁的目的是防止线程已经关闭，却还有任务被submit），之后释放锁并通过m_cv.notify_all()来唤醒所有线程并调用join()，此时这些线程会将任务队列中残留的所有任务全部执行完，然后退出</p>
+<p>当我们submit一个任务（也就是函数）时，先使用可变参数的函数模板拿到函数的指针和参数，再通过std::bind和std::forward（完美转发）来将该任务封装为一个无参数的可调用对象，再通过std::packaged_task将该调用对象的返回值封装到std::future中，再通过std::make_shared函数将该调用对象封装到shared指针中，最后再通过lambda表达式将调用shared指针来获取future的过程封装为一个无返回值的可调用对象</p>
+<p>至此，我们就得到了一个std::function&lt;void()&gt;的可调用对象，可以放入我们的tasks队列了（依然使用emplace）</p>
+<p>放入队列后，我们唤醒一个阻塞的线程去处理它，并向上层返回一个std::future，从而可以实现异步读写（由于我们的读写都不需要获取返回值，通过errno来返回错误信息，因此上层其实并未使用到std::future）</p>
+<h3 id="HTTPrequest"><a href="#HTTPrequest" class="headerlink" title="HTTPrequest"></a>HTTPrequest</h3><p>这个类的作用是读取读缓冲区中的数据并解析</p>
+<p>bool HTTPrequest::parse(Buffer&amp; buff)引入一个缓冲区，解析其中数据，并返回是否成功</p>
+<p>每次我们在缓冲区中找到”\r\n”作为一行的结尾，并从缓冲区中提取当前读指针到当前行的结尾之间的数据，开始解析</p>
+<p>这里设计了一个简单的有限状态自动机</p>
+<img src="/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/1.png" class title="This is an example image">
+
+<p>解析时根据当前状态选择解析请求行&#x2F;请求头&#x2F;请求体，格式如下</p>
+<img src="/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/2.png" class title="This is an example image">
+
+<p>在解析请求行和请求头时，我们都利用了正则表达式，用一个std::regex patten对象来存储我们想要的模式，std::smatch subMatch来存储匹配结果，regex_match(line, subMatch, patten)进行匹配，如果匹配成功，该函数返回true</p>
+<p>subMatch中的第0个元素保存匹配到的整个串，之后第i个元素保存匹配到的每个分组（即用括号括住的一部分）</p>
+<p>从而得到我们想要的请求行中的HTTP版本，请求的资源路径，请求方法（如get，post），以及请求头中每个字段的值</p>
+<p>这些都用std::unordered_map&lt;std::string,std::string&gt;来存储，方便后续使用</p>
+<p>在parse请求体时，我们先检查请求方法是否是post，以及内容类型是否是”application&#x2F;x-www-form-urlencoded”</p>
+<p>之后我们依然拆分出请求体中每个字段的值，存在unordered_map中（后续其实并没有使用到）</p>
+<h3 id="HTTPresponse"><a href="#HTTPresponse" class="headerlink" title="HTTPresponse"></a>HTTPresponse</h3><p>这个类的作用是生成HTTP响应并写入fd中</p>
+<p>在构造函数中，输入四个参数：HTTPresponse::init(const std::string&amp; srcDir, std::string&amp; path, bool isKeepAlive, int code)</p>
+<p>srcDir是当前工作目录（由上层调用getcwd获得），path是资源路径（由HTTPrequest解析得到），两者结合起来用于寻找请求的文件</p>
+<p>第三个参数是选择是否长连接，第四个是响应状态码，如果request解析成功为200，否则为400</p>
+<p>主要函数为makeResponse(Buffer&amp; buff)，参数为写缓冲区</p>
+<p>该函数首先检查srcDir+path下请求的文件能否找到</p>
+<ul>
+<li>若找不到或找到的文件为目录，响应状态码设置为404</li>
+<li>若能找到但不允许其他用户读，响应状态码设置为403</li>
+<li>否则保持之前设置的响应状态码</li>
+</ul>
+<p>然后首先对400，403，404这三个状态码的情况下进行特殊处理，将路径（path_）设定为对应的错误文件，如果不是这三种，path_不变</p>
+<p>先添加响应行，包括固定的HTTP&#x2F;1.1，响应状态码以及对应的提示（提前存储在unordered_map中）</p>
+<p>其次添加响应头，包括是否长连接（若是，最大连接数以及持续时间），内容类型（以path_中的文件后缀为key在unordered_map中查找获得）</p>
+<p>最后添加响应体，通过open函数以只读模式打开请求的资源文件，若失败，则输出html格式的错误信息；若成功，则通过mmap将文件映射到虚拟内存中，并保存其起始指针（注意，此时并没有将内容写入写缓冲区）</p>
+<h3 id="HTTPconnection"><a href="#HTTPconnection" class="headerlink" title="HTTPconnection"></a>HTTPconnection</h3><p>这个类的作用是整合HTTPrequest和HTTPresponse，将HTTP解析和响应的过程封装起来，其成员变量包括：</p>
+<ul>
+<li>读写缓冲区</li>
+<li>HTTPrequest</li>
+<li>HTTPresponse</li>
+</ul>
+<p>构造函数为initHTTPConn(int fd, const sockaddr_in&amp; addr)，fd为socket对应的文件描述符，由上层创建，addr为此次连接的IP地址和端口；初始化读写缓冲区；这里有一个static std::atomic&lt;int&gt; userCount变量，表示当前有多少连接，用于上层判断，在这里我们把它加一</p>
+<p>同样用一个bool变量isClose_来表示连接是否关闭</p>
+<p>closeHTTPConn()为关闭当前连接，先将response中mmap的映射关闭，然后将isClose_设置为true，关闭socket对应的fd，userCount减一</p>
+<p>handleHTTPConn()是处理HTTP请求的函数</p>
+<p>先初始化HTTPrequest，parse读缓冲区中的数据，如果解析成功，以状态码200初始化HTTPresponse；否则以状态码400初始化HTTPresponse</p>
+<p>初始化后，调用response_.makeResponse(writeBuffer_)，将响应数据写入写缓冲区；注意，这里我们并没有包含响应体，只写入了响应行和响应头，那响应体怎么写入呢？</p>
+<p>我们实际上使用聚合写writev()，iov[0]设为写缓冲区，iov[1]为mmap映射的文件，直接将二者写入fd中，也就是说响应体实际上是不经过写缓冲区的</p>
+<p>那么现在还差一个步骤整个流程就完整了：fd与缓冲区的交互</p>
+<p>readBuffer(int* saveErrno)从fd中读取数据到读缓冲区，writeBuffer(int* saveErrno)将我们之前设置的iov[0]和iov[1]写入fd；这里读写的时候都需要判断epoll是否采用了边缘触发，若采用，则循环操作直到没有数据可读，或者可写的数据不足10240字节</p>
+<h3 id="Webserver"><a href="#Webserver" class="headerlink" title="Webserver"></a>Webserver</h3><h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>最后一部分Webserver，也就是我们服务器真正跑的代码，它使用了前面构造的所有功能，来实现一个web服务器</p>
+<p>在构造函数中，传入五个参数：监听socket运行的端口，是否采用优雅关闭，每个HTTP连接持续的时间，线程池的线程数量，epoll的触发模式</p>
+<p>用new初始化threadpoll，TimerManager，epoller，用经典的isClose_表示服务器是否关闭</p>
+<p>首先通过getcwd函数取得当前工作目录的绝对路径，并在后面附加”&#x2F;resources&#x2F;“，然后赋值到HTTPconnection::srcDir，之后这个目录会传入HTTPresponse用于寻找资源文件</p>
+<p>然后我们需要调用initEventMode_(int trigMode)初始化epoll的设置，这里监听socket和连接socket的检测采用不同的设置</p>
+<p>首先是EPOLLRDHUP，通过检测该事件，我们可以判断对方是否调用close()来断开连接，两种socket均采用</p>
+<p>其次，对连接socket，我们设置EPOLLONESHOT，这样一来每次处理当前socket之后，就需要重新在epoll中再次监听该socket（<strong>这里有一个问题，在这样的设置下长连接是否还有意义？</strong>），在这之前一个线程需要处理完毕，这样可以防止多个线程同时处理一个socket</p>
+<p>最后我们对两个事件分别设置是否采用边缘触发，再通过设置好的选项来赋值HTTPconnection::isET，它在HTTPconnection进行读写fd时起作用</p>
+<p>下一步是初始化监听socket</p>
+<p>协议簇设为AF_INET，地址为INADDR_ANY，表示可以监听任意网卡，端口为构造函数中初始化的端口；注意这里地址和端口都需要从主机字节序转换为网络字节序</p>
+<p>然后通过构造函数中传入的参数，设置优雅关闭；这里如果选择优雅关闭的话，我们把linger结构体中的l_onoff字段和l_linger字段都设为1，表示关闭时先滞留一段时间发送剩余数据，若超时还未发送完就强制结束；这样可以在服务器退出前先处理完未处理的任务</p>
+<p>然后把listenfd设置为SO_REUSEADDR（端口复用）模式，这样做的话，可以在服务器主动关闭后处于TIME_WAIT状态时重新启动服务器</p>
+<p>最后使用epoller将listenfd加入监听列表，按照之前的epoll设置，监听其输入事件，并将listenfd通过fnctl函数设置为非阻塞模式</p>
+<p>至此我们已经做好了准备工作，可以启动服务器了</p>
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><p>调用Start()，并设置epoll的阻塞时间为-1，即无事件时一直阻塞</p>
+<p>然后在一个条件为(isClose_ &#x3D;&#x3D; false)的循环中，开始进行处理</p>
+<p>每次我们先从TimeManager中获得下一个到期的连接，设置为epoll的阻塞时间，并调用epoller的wait函数来获取事件</p>
+<p>我们枚举每个事件</p>
+<ul>
+<li>若对应的fd为listenfd，则建立一个新连接</li>
+<li>否则，若(events &amp; (EPOLLRDHUP | EPOLLHUP | EPOLLERR))，即对方关闭了连接或者发生错误，则关闭该fd对应的连接</li>
+<li>否则，若为读写事件，进行读写</li>
+</ul>
+<h4 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h4><p>调用accept响应一个连接请求，并获取其IP地址和端口</p>
+<p>若连接数userCount大于等于最大连接数（设置为65536），发送错误信息”Server busy!”并return，否则调用addClientConnection(fd, addr)建立连接；注意：如果(listenEvent_ &amp; EPOLLET)，循环操作直到accept到的fd小于等于0</p>
+<p>Webserver用一个std::unordered_map&lt;int, HTTPconnection&gt; users_来存储每个fd对应的HTTP连接，我们通过调用users_[fd].initHTTPConn(fd,addr)来初始化一个连接，之后我们添加一个TimerNode作为这个连接的定时器，其回调函数为std::bind(&amp;WebServer::closeConn_, this, &amp;users_[fd])，因为我们需要通过std::bind传递成员函数，所以这里第二个参数需要传入一个对象实例，说明该成员函数是谁在调用</p>
+<p>这个回调函数的功能实际上就是关闭连接，也就是一旦一个连接过期，我们就把它关闭</p>
+<p>然后我们通过epoller将这个新建立的连接对应的fd添加到监听列表，并将fd设定为非阻塞</p>
+<h4 id="读"><a href="#读" class="headerlink" title="读"></a>读</h4><p>首先调用handleRead_(HTTPconnection* client)函数，更新该HTTP连接的定时器</p>
+<p>然后通过线程池提交一个任务：std::bind(&amp;WebServer::onRead_, this, client)</p>
+<p>在onRead_(HTTPconnection* client)函数中，我们调用HTTPconnection的readBuffer函数</p>
+<p>若发生错误，则关闭连接并return</p>
+<p>否则调用onprocess_函数，在该函数中调用client-&gt;handleHTTPConn()，解析HTTP请求并生成响应，写入缓冲区（此时数据还未写入fd）</p>
+<p>这里注意我们还需要重设该连接的fd在epoll中的监听事件为EPOLLOUT（由于连接事件监听设置为EPOLLONESHOT，重设之前应该已经不再监听）</p>
+<h4 id="写"><a href="#写" class="headerlink" title="写"></a>写</h4><p>类似地，首先调用handleWrite_(HTTPconnection* client)函数，更新该HTTP连接的定时器</p>
+<p>然后通过线程池提交一个任务：std::bind(&amp;WebServer::onWrite_, this, client)</p>
+<p>在onWrite_(HTTPconnection* client)函数中，我们调用HTTPconnection的writeBuffer函数</p>
+<ul>
+<li>若传输完成，我们看该连接是否为长连接，若是，回到onProcess_函数中重设epoll监听事件为EPOLLIN（<strong>这里解释了前面的问题，通过这样的方式实现了长连接</strong>），并return</li>
+<li>否则，若下层返回的错误号为EAGAIN，即由于资源原因需要重试，就重设epoll监听事件为EPOLLOUT，下次重新传输，并return</li>
+<li>否则关闭连接（可能是该连接不是长连接，或者发生未知错误）</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个项目比较庞大，共约有一千七百行代码，其中包含了很多C++11的机制，涉及很多多线程编程的思想，也让我理解了服务器工作的原理。做完这个项目感觉收获很大，我认为这是一个对于C++初学者来说很好的项目。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag"># 网络编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/22/2022-3-22-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AERay-tracing-in-one-weekend/" rel="prev" title="Ray tracing in one weekend">
+      <i class="fa fa-chevron-left"></i> Ray tracing in one weekend
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer"><span class="nav-text">Buffer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Epoller"><span class="nav-text">Epoller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Timer"><span class="nav-text">Timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#threadpool"><span class="nav-text">threadpool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPrequest"><span class="nav-text">HTTPrequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPresponse"><span class="nav-text">HTTPresponse</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPconnection"><span class="nav-text">HTTPconnection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Webserver"><span class="nav-text">Webserver</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-text">启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-text">建立连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB"><span class="nav-text">读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99"><span class="nav-text">写</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wizzr"
+      src="/images/image1.jpg">
+  <p class="site-author-name" itemprop="name">Wizzr</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wizzr</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
