@@ -20,17 +20,17 @@
     var CONFIG = {"hostname":"kz7279.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能web服务器，经过webbenchh压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装cha">
+  <meta name="description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能web服务器，经过webbench压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装char">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++ Webserver">
 <meta property="og:url" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/index.html">
 <meta property="og:site_name" content="Wizzr&#39;s Blog">
-<meta property="og:description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能web服务器，经过webbenchh压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装cha">
+<meta property="og:description" content="简介github地址：Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com) 用C++实现的高性能web服务器，经过webbench压力测试可以实现上万的QPS 技术点：  利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型 利用正则与状态机解析HTTP请求报文，实现处理静态资源的请求 利用标准库容器封装char">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/1.png">
 <meta property="og:image" content="https://kz7279.github.io/2022/03/31/2022-3-31-%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AEWebserver/2.png">
 <meta property="article:published_time" content="2022-03-31T12:17:17.000Z">
-<meta property="article:modified_time" content="2022-03-31T12:49:34.824Z">
+<meta property="article:modified_time" content="2022-06-07T11:10:10.107Z">
 <meta property="article:author" content="Wizzr">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="网络编程">
@@ -187,10 +187,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-03-31 20:17:17 / Modified: 20:49:34" itemprop="dateCreated datePublished" datetime="2022-03-31T20:17:17+08:00">2022-03-31</time>
+              <time title="Created: 2022-03-31 20:17:17" itemprop="dateCreated datePublished" datetime="2022-03-31T20:17:17+08:00">2022-03-31</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-06-07 19:10:10" itemprop="dateModified" datetime="2022-06-07T19:10:10+08:00">2022-06-07</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -213,7 +219,7 @@
 
       
         <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>github地址：<a target="_blank" rel="noopener" href="https://github.com/Aged-cat/WebServer">Aged-cat&#x2F;WebServer: Uubuntu 20 C++版本的web服务器(github.com)</a></p>
-<p>用C++实现的高性能web服务器，经过webbenchh压力测试可以实现上万的QPS</p>
+<p>用C++实现的高性能web服务器，经过webbench压力测试可以实现上万的QPS</p>
 <p>技术点：</p>
 <ul>
 <li>利用IO复用技术Epoll与线程池实现多线程的Reactor高并发模型</li>
@@ -294,6 +300,7 @@
 <p>先添加响应行，包括固定的HTTP&#x2F;1.1，响应状态码以及对应的提示（提前存储在unordered_map中）</p>
 <p>其次添加响应头，包括是否长连接（若是，最大连接数以及持续时间），内容类型（以path_中的文件后缀为key在unordered_map中查找获得）</p>
 <p>最后添加响应体，通过open函数以只读模式打开请求的资源文件，若失败，则输出html格式的错误信息；若成功，则通过mmap将文件映射到虚拟内存中，并保存其起始指针（注意，此时并没有将内容写入写缓冲区）</p>
+<p>这里使用mmap可以实现零拷贝，这是一个技术点</p>
 <h3 id="HTTPconnection"><a href="#HTTPconnection" class="headerlink" title="HTTPconnection"></a>HTTPconnection</h3><p>这个类的作用是整合HTTPrequest和HTTPresponse，将HTTP解析和响应的过程封装起来，其成员变量包括：</p>
 <ul>
 <li>读写缓冲区</li>
@@ -351,7 +358,7 @@
 <li>否则，若下层返回的错误号为EAGAIN，即由于资源原因需要重试，就重设epoll监听事件为EPOLLOUT，下次重新传输，并return</li>
 <li>否则关闭连接（可能是该连接不是长连接，或者发生未知错误）</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个项目比较庞大，共约有一千七百行代码，其中包含了很多C++11的机制，涉及很多多线程编程的思想，也让我理解了服务器工作的原理。做完这个项目感觉收获很大，我认为这是一个对于C++初学者来说很好的项目。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这个项目比较庞大，其中包含了很多C++11的机制，涉及多线程编程的思想，也让我大致理解了服务器工作的原理。做完这个项目感觉收获很大，我认为这是一个对于C++初学者来说很好的项目</p>
 
     </div>
 
